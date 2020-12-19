@@ -20,7 +20,7 @@ socket.on('topic',data => {
 })
 var Consumer = kafka.Consumer,
     client = new kafka.KafkaClient({
-        kafkaHost: "171.234.204.128:9092"
+        kafkaHost: "localhost:9092"
     }),
     consumer = new Consumer(
         client, [{ topic: 'RESULTS', partition: 0 }], { autoCommit: true });

@@ -26,6 +26,7 @@ export default class App extends Component {
     });
     socket.on('topic', data => {
       console.log(data)
+      play();
       // setResponse(data);
     })
     am4core.useTheme(am4themes_animated);
@@ -141,9 +142,9 @@ export default class App extends Component {
     var interval;
 
     function play() {
-      interval = setInterval(function () {
-        nextDay();
-      }, stepDuration);
+      // interval = setInterval(function () {
+      //   nextDay();
+      // }, stepDuration);
       nextDay();
     }
 
