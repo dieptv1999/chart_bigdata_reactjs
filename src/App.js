@@ -13,40 +13,6 @@ const ENDPOINT = "http://localhost:5001";
 // const socket = socketIOClient(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket'] });
 const socket = io(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket'] });
 
-// function App() {
-//   const [response, setResponse] = useState("");
-
-//   useEffect(() => {
-//     socket.on("connection", () => {
-//       console.log("connect to server");
-//     });
-//     socket.on('topic', data =>{
-//       console.log(data)
-//       setResponse(data);
-//     })
-//   }, []);
-
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src="https://i.ibb.co/0hq5KTW/0f29c7e6ab22dda8d97c14787b44c0d0.jpg" className="App-logo" alt="logo" />
-//         <p>
-//           {response}
-//         </p>
-//         {/* <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a> */}
-//       <p>Học bigdata cùng Lazyyy</p>
-//       </header>
-//     </div>
-//   );
-// }
-
 // export default App;
 export default class App extends Component {
   constructor(props) {
@@ -157,10 +123,11 @@ export default class App extends Component {
 
     var labelBullet = series2.bullets.push(new am4charts.LabelBullet());
     labelBullet.locationX = 0.5;
-    labelBullet.label.text = "{valueX}";
-    labelBullet.label.fill = am4core.color("#fff");
-
-    var labelBullet = series3.bullets.push(new am4charts.LabelBullet());
+    function stop() {
+      if (interval) {
+        clearInterval(interval);
+      }
+    } var labelBullet = series3.bullets.push(new am4charts.LabelBullet());
     labelBullet.locationX = 0.5;
     labelBullet.label.text = "{valueX}";
     labelBullet.label.fill = am4core.color("#fff");
