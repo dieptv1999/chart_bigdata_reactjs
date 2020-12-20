@@ -13,22 +13,80 @@ const ENDPOINT = "http://localhost:5001";
 // const socket = socketIOClient(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket'] });
 const socket = io(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket'] });
 
-// export default App;
-export default class App extends Component {
-  constructor(props) {
-    super(props)
-  }
+function App() {
+  const [response, setResponse] = useState([]);
 
-  componentDidMount() {
-    let chart = am4core.create("chartdiv", am4charts.XYChart);
-    socket.on("connection", () => {
+  // useEffect(() => {
+  //   socket.on("connection", () => {
+  //     console.log("connect to server");
+  //   });
+  //   socket.on('topic', data =>{
+  //     // message must under the form of [tag:pos:neg:neu]
+  //     console.log(data);
+  //     let found;
+  //     data = data.slice(1, -1);
+  //     data = data.split(':');
+  //     data[1] = parseInt(data[1]);
+  //     data[2] = parseInt(data[2]);
+  //     data[3] = parseInt(data[3]);
+
+  //     if(response.length > 0) {
+  //       found = false;
+  //       response.forEach((element) => {
+  //         if(element[0] === data[0]) {
+  //           found = true;
+  //           element[1] += data[1];
+  //           element[2] += data[2];
+  //           element[3] += data[3];
+  //         } 
+  //       })
+        
+  //       if(!found) {
+  //         response.push(data);
+  //       }
+  //     } else {
+  //       response.push(data);
+  //     }
+      
+  //     setResponse([...response]);
+  //   })
+  // }, []);
+
+  useEffect(() => {
+      socket.on("connection", () => {
       console.log("connect to server");
     });
-    socket.on('topic', data => {
-      console.log(data)
-      play();
-      // setResponse(data);
+    socket.on('topic', data =>{
+      // message must under the form of [tag:pos:neg:neu]
+      console.log(data);
+      let found;
+      data = data.slice(1, -1);
+      data = data.split(':');
+      data[1] = parseInt(data[1]);
+      data[2] = parseInt(data[2]);
+      data[3] = parseInt(data[3]);
+
+      if(response.length > 0) {
+        found = false;
+        response.forEach((element) => {
+          if(element[0] === data[0]) {
+            found = true;
+            element[1] += data[1];
+            element[2] += data[2];
+            element[3] += data[3];
+          } 
+        })
+        
+        if(!found) {
+          response.push(data);
+        }
+      } else {
+        response.push(data);
+      }
+      
+      setResponse([...response]);
     })
+    let chart = am4core.create("chartdiv", am4charts.XYChart);
     am4core.useTheme(am4themes_animated);
     // Themes end
     chart.padding(10, 10, 10, 10);
@@ -38,10 +96,6 @@ export default class App extends Component {
       { number: 1e6, suffix: "M" },
       { number: 1e9, suffix: "B" },
     ];
-
-    // chart.legend = new am4charts.Legend();
-    // chart.legend.position = "right";
-
 
     var label = chart.plotContainer.createChild(am4core.Label);
     label.x = am4core.percent(97);
@@ -122,30 +176,25 @@ export default class App extends Component {
     labelBullet.label.text = "{valueX}";
     labelBullet.label.fill = am4core.color("#fff");
 
-    var labelBullet = series2.bullets.push(new am4charts.LabelBullet());
-    labelBullet.locationX = 0.5;
-    function stop() {
-      if (interval) {
-        clearInterval(interval);
-      }
-    } var labelBullet = series3.bullets.push(new am4charts.LabelBullet());
-    labelBullet.locationX = 0.5;
-    labelBullet.label.text = "{valueX}";
-    labelBullet.label.fill = am4core.color("#fff");
+    var labelBullet2 = series2.bullets.push(new am4charts.LabelBullet());
+    labelBullet2.locationX = 0.5;
+    labelBullet2.label.text = "{valueX}";
+    labelBullet2.label.fill = am4core.color("#fff");
+
+    var labelBullet3 = series3.bullets.push(new am4charts.LabelBullet());
+    labelBullet3.locationX = 0.5;
+    labelBullet3.label.text = "{valueX}";
+    labelBullet3.label.fill = am4core.color("#fff");
 
     chart.zoomOutButton.disabled = true;
-
-    var day = 3;
-    var month = 11;
-    label.text = day.toString() + "/" + month.toString();
 
     var interval;
 
     function play() {
       // interval = setInterval(function () {
-      //   nextDay();
+      //   updateData();
       // }, stepDuration);
-      nextDay();
+      updateData();
     }
 
     function stop() {
@@ -154,20 +203,8 @@ export default class App extends Component {
       }
     }
 
-    function nextDay() {
-      day++;
-
-      if (day > 30) {
-        month++;
-        day = 1;
-      }
-
-      if (day === 14 && month === 12) {
-        day = 3;
-        month = 11;
-      }
-
-      var newData = allData[day.toString() + "/" + month.toString()];
+    function updateData() {
+      var newData = allData;
 
       var itemsWithNonZero = 0;
       var itemsWithNonZero2 = 0;
@@ -187,20 +224,12 @@ export default class App extends Component {
         }
       }
 
-      if (month === 11 || month === 12) {
-        series.interpolationDuration = stepDuration / 4;
-        series2.interpolationDuration = stepDuration / 4;
-        series3.interpolationDuration = stepDuration / 4;
-        valueAxis.rangeChangeDuration = stepDuration / 4;
-      } else {
-        series.interpolationDuration = stepDuration;
-        series2.interpolationDuration = stepDuration;
-        series3.interpolationDuration = stepDuration;
-        valueAxis.rangeChangeDuration = stepDuration;
-      }
+      series.interpolationDuration = stepDuration / 4;
+      series2.interpolationDuration = stepDuration / 4;
+      series3.interpolationDuration = stepDuration / 4;
+      valueAxis.rangeChangeDuration = stepDuration / 4;
 
       chart.invalidateRawData();
-      label.text = day.toString() + "/" + month.toString();
 
       categoryAxis.zoom({
         start: 0,
@@ -212,86 +241,83 @@ export default class App extends Component {
     categoryAxis.sortBySeries = series2;
     categoryAxis.sortBySeries = series3;
 
-    function generateData() {
-      var data = [];
+    let allData = [];
 
-      // generate random data for allData
-      for (var i = 0; i < tags.length; i++) {
-        var tweetNumber = Math.floor(Math.random() * 10000);
+    function generateData() {
+      const data = []
+      for(var i = 0; i < response.length; i++) {
         var dataElement = {
-          choice: tags[i],
-          numberOfTweets: tweetNumber + Math.floor(Math.random() * 10000),
-          numberOfTweets2: tweetNumber + Math.floor(Math.random() * 10000),
-          numberOfTweets3: tweetNumber + Math.floor(Math.random() * 10000),
+          choice: response[i][0],
+          numberOfTweets: response[i][1],
+          numberOfTweets2: response[i][2],
+          numberOfTweets3: response[i][3],
         };
 
         data.push(dataElement);
       }
-
-      return data;
-    }
-
-    var numberOfDays = 30 - 3 + 14;
-    var allData = [];
-    var oldData;
-
-    function fillData() {
-      var dayLabel = 3;
-      var monthLabel = 11;
-      for (var i = 0; i < numberOfDays; i++) {
-
-        var labelTag = dayLabel.toString() + "/" + monthLabel.toString();
-
-        dayLabel++;
-
-        if (dayLabel === 31 && monthLabel === 11) {
-          dayLabel = 1;
-          monthLabel = 12;
-        }
-
-        var dataArr = generateData();
-        // add old data to new data
-        if (oldData) {
-          for (var j = 0; j < tags.length; j++) {
-            dataArr[j].numberOfTweets += oldData[j].numberOfTweets;
-            dataArr[j].numberOfTweets2 += oldData[j].numberOfTweets2;
-            dataArr[j].numberOfTweets3 += oldData[j].numberOfTweets3;
-          }
-        }
-
-        oldData = dataArr;
-        dataArr = dataArr.sort().slice(0, 5);
-
-        // allData is main data array use for fill data
-        allData[labelTag] = dataArr;
+      
+      for(var j = 0; j < data.length; j++) {
+        allData[j] = data[j]; 
       }
+      
+      allData = allData.sort((a, b) => b.numberOfTweets3 - a.numberOfTweets3).slice(0, 5);
     }
 
-    fillData();
+    generateData();
+    console.log(allData);
 
     chart.data = JSON.parse(
-      JSON.stringify(allData[day.toString() + "/" + month.toString()])
+      JSON.stringify(allData)
     );
     categoryAxis.zoom({ start: 0, end: 1 / chart.data.length });
 
     series.events.on("inited", function () {
       setTimeout(function () {
         playButton.isActive = true; // this starts interval
-      }, 4000);
+      }, 10);
     });
+  }, [response]);
 
-    this.chart = chart
-  }
+  // const handleClick = () => {
+  //   const randomTag = tags[Math.floor(Math.random() * tags.length)];
+  //   const pos = Math.floor(Math.random() * 10000);
+  //   const neg = Math.floor(Math.random() * 10000);
+  //   const neu = Math.floor(Math.random() * 10000);
+  //   let data = '[' + randomTag + ':' + pos + ':' + neg + ':' + neu + ']'; 
+  //   let found;
+  //   data = data.slice(1, -1);
+  //   data = data.split(':');
+  //   data[1] = parseInt(data[1]);
+  //   data[2] = parseInt(data[2]);
+  //   data[3] = parseInt(data[3]);
 
-  componentWillUnmount() {
-    if (this.chart) {
-      this.chart.dispose();
-    }
-  }
+  //   if(response.length > 0) {
+  //     found = false;
+  //     response.forEach((element) => {
+  //       if(element[0] === data[0]) {
+  //         found = true;
+  //         element[1] += data[1];
+  //         element[2] += data[2];
+  //         element[3] += data[3];
+  //       } 
+  //     })
+      
+  //     if(!found) {
+  //       response.push(data);
+  //     }
+  //   } else {
+  //     response.push(data);
+  //   }
+    
+  //   setResponse([...response]);
+  // }
 
-  render() {
-    return (
-      <div id="chartdiv" style={{ width: "100%", height: "100vh" }}></div>
-    );
-  }
+  return (
+    <>
+    <div id="chartdiv" style={{ width: "100%", height: "100vh" }}></div>
+    {/* <button onClick={handleClick}>Generate fake data</button> */}
+    </>
+  );
 }
+
+export default App;
