@@ -122,7 +122,7 @@ function App() {
     chart.legend = new am4charts.Legend();
     chart.legend.position = "right";
 
-    var stepDuration = 4000;
+    var stepDuration = 1000;
 
     var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
     categoryAxis.renderer.grid.template.location = 0;
