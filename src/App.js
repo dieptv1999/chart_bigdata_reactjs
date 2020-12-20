@@ -16,44 +16,8 @@ const socket = io(ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket'
 function App() {
   const [response, setResponse] = useState([]);
 
-  // useEffect(() => {
-  //   socket.on("connection", () => {
-  //     console.log("connect to server");
-  //   });
-  //   socket.on('topic', data =>{
-  //     // message must under the form of [tag:pos:neg:neu]
-  //     console.log(data);
-  //     let found;
-  //     data = data.slice(1, -1);
-  //     data = data.split(':');
-  //     data[1] = parseInt(data[1]);
-  //     data[2] = parseInt(data[2]);
-  //     data[3] = parseInt(data[3]);
-
-  //     if(response.length > 0) {
-  //       found = false;
-  //       response.forEach((element) => {
-  //         if(element[0] === data[0]) {
-  //           found = true;
-  //           element[1] += data[1];
-  //           element[2] += data[2];
-  //           element[3] += data[3];
-  //         } 
-  //       })
-        
-  //       if(!found) {
-  //         response.push(data);
-  //       }
-  //     } else {
-  //       response.push(data);
-  //     }
-      
-  //     setResponse([...response]);
-  //   })
-  // }, []);
-
   useEffect(() => {
-      socket.on("connection", () => {
+    socket.on("connection", () => {
       console.log("connect to server");
     });
     socket.on('topic', data =>{
@@ -86,6 +50,9 @@ function App() {
       
       setResponse([...response]);
     })
+  }, []);
+
+  useEffect(() => {
     let chart = am4core.create("chartdiv", am4charts.XYChart);
     am4core.useTheme(am4themes_animated);
     // Themes end
