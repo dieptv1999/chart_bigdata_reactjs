@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import tags from "./tags.js";
+import React from 'react';
 import io from "socket.io-client";
 import { useEffect, useState } from 'react';
 import * as am4core from "@amcharts/amcharts4/core";
@@ -180,8 +179,6 @@ function TagChart() {
 
     chart.zoomOutButton.disabled = true;
 
-    var interval;
-
     function play() {
       setIsStart(true)
     }
@@ -200,6 +197,7 @@ function TagChart() {
         playButton.isActive = true; // this starts interval
       }, 10);
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
