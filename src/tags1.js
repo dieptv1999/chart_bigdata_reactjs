@@ -1,0 +1,26 @@
+const tags1 = [
+    "#DemConvention",
+    "#DemDebate",
+    "#MarchToThePollsForJoe",
+    "#EndTheChaos",
+    "#VoteHimOut",
+    "#VoteBidenHarris",
+    "#VoteBidenHarris2020",
+    "#VoteBlueToEndThisNightmare",
+    "#TrumpIsUnfitForOffice",
+    "#VoteTrumpOut",
+    "#BidenHarris2020",
+    "#TrumpLiesPeopleDie",
+    "#TrumpLiesEverytimeHeSpeaks",
+    "#TrumpIsKillingAmericans",
+    "#TrumpIsANationalDisgrace",
+    "#TrumpIsALiar",
+    "#PinnochioPresident",
+    "#VoteBlue2020",
+    "#RemoveTrump",
+    "#TrumpMeltdown",
+    "#TrumpIsLosing",
+    "#25thAmendmentNow",
+]
+
+export default tags1;

@@ -39,7 +39,7 @@ export default class AnalysisChart extends Component {
         if (this.state.response.length > 0) {
           found = false;
           this.state.response.forEach((element) => {
-            if (element[0] == 'Joe Biden' && tags.includes(data[0])) {
+            if (element[0] === 'Joe Biden' && tags.includes(data[0])) {
               found = true;
               element[1] += data[1];
               element[2] += data[2];
@@ -54,13 +54,13 @@ export default class AnalysisChart extends Component {
           if (!found) {
             // this.state.response.push(data)
             this.setState({
-              response: [...this.state.response]
+              response: [...this.state.response, data]
             })
           }
         } else {
           // this.state.response.push(data)
           this.setState({
-            response: [...this.state.response]
+            response: [...this.state.response, data]
           })
         }
         let allData = [];
