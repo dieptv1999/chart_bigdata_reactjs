@@ -28,68 +28,95 @@ function TagChart() {
         let found;
         data = data.slice(1, -1);
         data = data.split(':');
-        data[1] = parseInt(data[1]);
-        data[2] = parseInt(data[2]);
-        data[3] = parseInt(data[3]);
+        data[1] = parseInt(data[1]) + parseInt(data[2]) + parseInt(data[3]);
+        let temp = [data[0], data[1]];
 
         if (response.length > 0) {
           found = false;
           response.forEach((element) => {
+            // bidden
             if (element[0] === data[0] && tags1.includes(data[0])) {
               found = true;
-              element[1] += data[1];
-              element[2] += data[2];
-              element[3] += data[3];
-            } else if()
+              element[1] += temp[1];
+              element[2] = 'JoeBiden';
+            } else if(element[0] === data[0] && tags2.includes(data[0])) { // trump
+              found = true;
+              element[1] += temp[1];
+              element[2] = 'DonaldTrump'
+            } else if(element[0] === data[0] && tags3.includes(data[0])) { // neutral
+              found = true;
+              element[1] += temp[1];
+              element[2] = 'Neutral'
+            }
           })
 
           if (!found) {
-            response.push(data);
+            if(tags1.includes(data[0])) {
+              temp = [data[0], data[1], 'JoeBiden'];
+            } else if(tags2.includes(data[0])) {
+              temp = [data[0], data[1], 'DonaldTrump'];
+            } else if(tags3.includes(data[0])) {
+              temp = [data[0], data[1], 'Neutral'];
+            }
+            response.push(temp);
           }
         } else {
-          response.push(data);
+          if(tags1.includes(data[0])) {
+            temp = [data[0], data[1], 'JoeBiden'];
+          } else if(tags2.includes(data[0])) {
+            temp = [data[0], data[1], 'DonaldTrump'];
+          } else if(tags3.includes(data[0])) {
+            temp = [data[0], data[1], 'Neutral'];
+          }
+          response.push(temp);
         }
 
         let allData = [];
 
         function generateData() {
-          const data = []
+          const data = [];
+          let joe = 0;
+          let trump = 0;
+          let neutral = 0;
           for (var i = 0; i < response.length; i++) {
+            if(response[i][2] === 'JoeBiden') {
+              joe += response[i][1];
+            } else if(response[i][2] === 'DonaldTrump') {
+              trump += response[i][1];
+            } else if(response[i][2] === 'Neutral') {
+              neutral += response[i][1];
+            }
+
+            console.log(joe, trump, neutral)
+
             var dataElement = [
+              { choice: "Joe Biden", numberOfTweets: joe },
               {
                 choice: "Donald Trump",
-                numberOfTweets: response[i][1],
+                numberOfTweets: trump,
               },
-              { choice: "Joe Biden", numberOfTweets: response[i][2]},
               {
                 choice: "Neutral (Not vote)",
-                numberOfTweets: response[i][3],
+                numberOfTweets: neutral,
               },
             ];
 
             data.push(dataElement);
+
           }
 
-          for (var j = 0; j < data.length; j++) {
-            allData[j] = data[j];
-          }
-
-          allData = allData.sort((a, b) => b.numberOfTweets3 - a.numberOfTweets3).slice(0, 5);
+          allData = data;
         }
 
         generateData();
-        console.log(allData);
 
         chart.data = JSON.parse(
-          JSON.stringify(allData)
+          JSON.stringify(allData[allData.length - 1])
         );
+
         setResponse([...response]);
       }
     })
-
-
-    chart.legend = new am4charts.Legend();
-    chart.legend.position = "right";
 
     // Themes begin
     am4core.useTheme(am4themes_animated);
@@ -150,8 +177,7 @@ function TagChart() {
 
     var labelBullet = series.bullets.push(new am4charts.LabelBullet());
     labelBullet.label.horizontalCenter = "right";
-    labelBullet.label.text =
-      "{values.valueX.workingValue.formatNumber('#.0as %')}";
+    labelBullet.label.text = "{valueX}";
     labelBullet.label.textAlign = "end";
     labelBullet.label.dx = -10;
 
@@ -181,9 +207,15 @@ function TagChart() {
     });
   }, []);
 
+
+  useEffect(() => {
+    
+    console.log(response);
+  }, [response])
+
   return (
     <>
-      <div id="chartdiv" style={{ width: "100%", height: "100vh" }}></div>
+      <div id="chartdiv" style={{ width: "100%", height: "400px" }}></div>
     </>
   );
 }
